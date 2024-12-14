@@ -6,6 +6,7 @@ import {
   differenceInDays,
   differenceInHours,
   differenceInMinutes,
+  isValid,
 } from "date-fns";
 import { useEffect, useState } from "react";
 import { Card } from "./ui/card";
@@ -27,8 +28,17 @@ export default function MediaTile({ media, onRemove }: MediaTileProps) {
       targetDate = parseISO(media.release_date);
     }
 
+    if (!isValid(targetDate)) {
+      return "Unknown date";
+    }
+
     const now = new Date();
     const days = differenceInDays(targetDate, now);
+
+    if (days < 0) {
+      return "Released";
+    }
+
     const hours = differenceInHours(targetDate, now) % 24;
     const minutes = differenceInMinutes(targetDate, now) % 60;
 
@@ -78,7 +88,7 @@ export default function MediaTile({ media, onRemove }: MediaTileProps) {
               ? `Next Episode: ${new Date(
                   media.next_episode_date
                 ).toLocaleDateString()}`
-              : "TV Show"
+              : "Next Episode: Unknown"
             : `Release Date: ${new Date(
                 media.release_date
               ).toLocaleDateString()}`}

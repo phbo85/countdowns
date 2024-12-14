@@ -21,8 +21,7 @@ export async function searchMedia(query: string): Promise<TMDBResult[]> {
       if (item.media_type === "movie") {
         return isAfter(parseISO(item.release_date), today);
       } else if (item.media_type === "tv") {
-        console.log(item);
-        return item.status !== "Ended"; // Filter out ended TV shows
+        return parseISO(item.first_air_date);
       }
       return false;
     });
@@ -85,21 +84,16 @@ export async function getMediaDetails(
         );
       }
 
-      // Only return TV shows with future episodes
-      if (nextEpisodeDate) {
-        return {
-          id: show.id,
-          title: show.name,
-          poster_path: show.poster_path
-            ? `https://image.tmdb.org/t/p/w500${show.poster_path}`
-            : "",
-          release_date: show.first_air_date,
-          next_episode_date: nextEpisodeDate,
-          media_type: "tv",
-        };
-      } else {
-        return null;
-      }
+      return {
+        id: show.id,
+        title: show.name,
+        poster_path: show.poster_path
+          ? `https://image.tmdb.org/t/p/w500${show.poster_path}`
+          : "",
+        release_date: show.first_air_date,
+        next_episode_date: nextEpisodeDate,
+        media_type: "tv",
+      };
     } else {
       // For movies, keep the existing logic
       const response = await axios.get(`${BASE_URL}/movie/${id}`, {

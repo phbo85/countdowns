@@ -59,9 +59,13 @@ export default function Home() {
         const updatedMedia = [...selectedMedia, details];
         updatedMedia.sort((a, b) => {
           const dateA =
-            a.media_type === "tv" ? a.next_episode_date : a.release_date;
+            a.media_type === "tv"
+              ? a.next_episode_date || a.release_date
+              : a.release_date;
           const dateB =
-            b.media_type === "tv" ? b.next_episode_date : b.release_date;
+            b.media_type === "tv"
+              ? b.next_episode_date || b.release_date
+              : b.release_date;
           return new Date(dateA).getTime() - new Date(dateB).getTime();
         });
         setSelectedMedia(updatedMedia);
