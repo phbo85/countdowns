@@ -1,4 +1,4 @@
-import { X, Clock } from "lucide-react";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MediaDetails } from "@/types/tmdb";
 import {

@@ -11,7 +11,7 @@ import {
   DrawerClose,
 } from "@/components/ui/drawer";
 import { searchMedia, getMediaDetails } from "@/lib/tmdb";
-import { TMDBResult, MediaDetails } from "@/types/tmdb";
+import { TMDBResult } from "@/types/tmdb";
 import { useMediaStore } from "@/stores/media-store";
 import { Card } from "@/components/ui/card";
 

@@ -65,11 +65,11 @@ export async function getMediaDetails(
         const today = new Date();
         const futureEpisodes = seasonResponse.data.episodes
           .filter(
-            (episode: any) =>
+            (episode: { air_date: string }) =>
               episode.air_date && isAfter(parseISO(episode.air_date), today)
           )
           .sort(
-            (a: any, b: any) =>
+            (a: { air_date: string }, b: { air_date: string }) =>
               parseISO(a.air_date).getTime() - parseISO(b.air_date).getTime()
           );
 
