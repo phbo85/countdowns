@@ -13,6 +13,7 @@ import {
 import { searchMedia, getMediaDetails } from "@/lib/tmdb";
 import { TMDBResult, MediaDetails } from "@/types/tmdb";
 import { useMediaStore } from "@/stores/media-store";
+import { Card } from "@/components/ui/card";
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
@@ -22,7 +23,7 @@ export default function SearchBar() {
 
   const handleSearch = async () => {
     const results = await searchMedia(query);
-    setSearchResults(results.slice(0, 6)); // Only show the first 6 results
+    setSearchResults(results.slice(0, 10));
     setIsDrawerOpen(true);
   };
 
@@ -76,39 +77,46 @@ export default function SearchBar() {
             <DrawerTitle>Search Results</DrawerTitle>
             <DrawerClose />
           </DrawerHeader>
-          <div className="grid grid-cols-3 gap-4 p-4">
+          <div className="flex flex-wrap gap-4 p-4">
             {searchResults.map((result) => {
               const isAlreadyAdded = selectedMedia.some(
                 (media) => media.id === result.id
               );
               return (
-                <div key={result.id} className="border p-2">
+                <Card
+                  key={result.id}
+                  className="relative overflow-hidden w-64 h-96"
+                >
                   {result.poster_path && (
                     <img
                       src={`https://image.tmdb.org/t/p/w200${result.poster_path}`}
                       alt={result.title || result.name}
-                      className="w-full h-48 object-cover mb-2"
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
                   )}
-                  <p className="font-bold">{result.title || result.name}</p>
-                  <p className="text-sm text-gray-500">
-                    {result.media_type === "movie"
-                      ? `Release Date: ${result.release_date}`
-                      : `First Air Date: ${result.first_air_date}`}
-                  </p>
-                  {isAlreadyAdded ? (
-                    <Button variant="outline" disabled>
-                      Already Added
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      onClick={() => addMediaToTracker(result)}
-                    >
-                      Add to Tracker
-                    </Button>
-                  )}
-                </div>
+                  <div className="relative z-10 p-4 bg-black bg-opacity-50 h-full flex flex-col justify-between">
+                    <h2 className="text-2xl font-bold text-white">
+                      {result.title || result.name}
+                    </h2>
+                    <p className="text-sm text-gray-300">
+                      {result.media_type === "movie"
+                        ? `Release Date: ${result.release_date}`
+                        : `First Air Date: ${result.first_air_date}`}
+                    </p>
+                    {isAlreadyAdded ? (
+                      <Button variant="outline" disabled>
+                        Already Added
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        onClick={() => addMediaToTracker(result)}
+                      >
+                        Add to Tracker
+                      </Button>
+                    )}
+                  </div>
+                </Card>
               );
             })}
           </div>
