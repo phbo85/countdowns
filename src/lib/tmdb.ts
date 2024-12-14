@@ -37,7 +37,6 @@ export async function getMediaDetails(
 ): Promise<MediaDetails | null> {
   try {
     if (mediaType === "tv") {
-      // Fetch show details
       const showResponse = await axios.get(`${BASE_URL}/tv/${id}`, {
         params: {
           api_key: TMDB_API_KEY,
