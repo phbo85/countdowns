@@ -40,7 +40,7 @@ export default function Home() {
 
   const handleSearch = async () => {
     const results = await searchMedia(query);
-    setSearchResults(results);
+    setSearchResults(results.slice(0, 6)); // Only show the first 6 results
     setIsDrawerOpen(true);
   };
 
@@ -56,7 +56,15 @@ export default function Home() {
     if (details) {
       // Prevent duplicates
       if (!selectedMedia.some((media) => media.id === details.id)) {
-        setSelectedMedia([...selectedMedia, details]);
+        const updatedMedia = [...selectedMedia, details];
+        updatedMedia.sort((a, b) => {
+          const dateA =
+            a.media_type === "tv" ? a.next_episode_date : a.release_date;
+          const dateB =
+            b.media_type === "tv" ? b.next_episode_date : b.release_date;
+          return new Date(dateA).getTime() - new Date(dateB).getTime();
+        });
+        setSelectedMedia(updatedMedia);
       }
     }
     setIsDrawerOpen(false);

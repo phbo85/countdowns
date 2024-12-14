@@ -13,7 +13,7 @@ interface MediaTileProps {
   media: MediaDetails;
   onRemove: () => void;
 }
-
+const col = "#6d28d9";
 export default function MediaTile({ media, onRemove }: MediaTileProps) {
   const [countdown, setCountdown] = useState<string>("");
 
