@@ -135,7 +135,7 @@ export default function Home() {
         </DrawerContent>
       </Drawer>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="flex flex-wrap gap-4">
         {selectedMedia.map((media) => (
           <MediaTile
             key={media.id}

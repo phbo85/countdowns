@@ -8,12 +8,13 @@ import {
   differenceInMinutes,
 } from "date-fns";
 import { useEffect, useState } from "react";
+import { Card } from "./ui/card";
 
 interface MediaTileProps {
   media: MediaDetails;
   onRemove: () => void;
 }
-const col = "#6d28d9";
+
 export default function MediaTile({ media, onRemove }: MediaTileProps) {
   const [countdown, setCountdown] = useState<string>("");
 
@@ -46,11 +47,11 @@ export default function MediaTile({ media, onRemove }: MediaTileProps) {
   }, [media]);
 
   return (
-    <div className="relative border rounded-lg p-4 shadow-md">
+    <Card className="relative overflow-hidden w-64 h-96">
       <Button
         variant="ghost"
         size="icon"
-        className="absolute top-2 right-2"
+        className="absolute top-2 right-2 z-10"
         onClick={onRemove}
       >
         <X className="h-4 w-4" />
@@ -60,28 +61,29 @@ export default function MediaTile({ media, onRemove }: MediaTileProps) {
         <img
           src={media.poster_path}
           alt={media.title}
-          className="w-full h-64 object-cover rounded-t-lg mb-4"
+          className="absolute inset-0 w-full h-full object-cover"
         />
       )}
 
-      <h2 className="text-lg font-bold mb-2">{media.title}</h2>
+      <div className="relative z-10 p-4 bg-black bg-opacity-50 h-full flex flex-col justify-between">
+        <h2 className="text-2xl font-bold text-white">{media.title}</h2>
 
-      <div className="flex items-center">
-        <Clock className="mr-2 h-4 w-4" />
-        <span>{countdown}</span>
-      </div>
+        <div className="flex items-center justify-center">
+          <span className="text-4xl font-bold text-white">{countdown}</span>
+        </div>
 
-      <div className="text-sm text-gray-500 mt-2">
-        {media.media_type === "tv"
-          ? media.next_episode_date
-            ? `Next Episode: ${new Date(
-                media.next_episode_date
-              ).toLocaleDateString()}`
-            : "TV Show"
-          : `Release Date: ${new Date(
-              media.release_date
-            ).toLocaleDateString()}`}
+        <div className="text-center text-sm text-gray-300">
+          {media.media_type === "tv"
+            ? media.next_episode_date
+              ? `Next Episode: ${new Date(
+                  media.next_episode_date
+                ).toLocaleDateString()}`
+              : "TV Show"
+            : `Release Date: ${new Date(
+                media.release_date
+              ).toLocaleDateString()}`}
+        </div>
       </div>
-    </div>
+    </Card>
   );
 }
