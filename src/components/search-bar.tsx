@@ -86,7 +86,7 @@ export default function SearchBar() {
               return (
                 <Card
                   key={result.id}
-                  className="relative overflow-hidden w-64 h-96"
+                  className="relative overflow-hidden w-28 lg:w-64 aspect-[2/3]"
                 >
                   {result.poster_path && (
                     <img
@@ -95,8 +95,8 @@ export default function SearchBar() {
                       className="absolute inset-0 w-full h-full object-cover"
                     />
                   )}
-                  <div className="relative z-10 p-4 bg-black bg-opacity-50 h-full flex flex-col justify-between">
-                    <h2 className="text-2xl font-bold text-white">
+                  <div className="relative z-10 p-2 bg-black bg-opacity-50 h-full flex flex-col justify-between">
+                    <h2 className="lg:text-2xl font-bold text-white">
                       {result.title || result.name}
                     </h2>
                     <p className="text-sm text-gray-300">
@@ -104,18 +104,20 @@ export default function SearchBar() {
                         ? `Release Date: ${result.release_date}`
                         : `First Air Date: ${result.first_air_date}`}
                     </p>
-                    {isAlreadyAdded ? (
-                      <Button variant="outline" disabled>
-                        Already Added
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        onClick={() => addMediaToTracker(result)}
-                      >
-                        Add to Tracker
-                      </Button>
-                    )}
+                    <div className="absolute bottom-2 left-2">
+                      {isAlreadyAdded ? (
+                        <Button variant="outline" disabled>
+                          Already Added
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          onClick={() => addMediaToTracker(result)}
+                        >
+                          Add
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </Card>
               );

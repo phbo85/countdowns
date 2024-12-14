@@ -57,11 +57,11 @@ export default function MediaTile({ media, onRemove }: MediaTileProps) {
   }, [media]);
 
   return (
-    <Card className="relative overflow-hidden w-64 h-96">
+    <Card className="relative overflow-hidden w-32 lg:w-64 aspect-[2/3]">
       <Button
         variant="ghost"
         size="icon"
-        className="absolute top-2 right-2 z-10"
+        className="absolute top-2 right-2 z-20"
         onClick={onRemove}
       >
         <X className="h-4 w-4" />
@@ -76,10 +76,10 @@ export default function MediaTile({ media, onRemove }: MediaTileProps) {
       )}
 
       <div className="relative z-10 p-4 bg-black bg-opacity-50 h-full flex flex-col justify-between">
-        <h2 className="text-2xl font-bold text-white">{media.title}</h2>
+        <h2 className="lg:text-2xl font-bold text-white">{media.title}</h2>
 
         <div className="flex items-center justify-center">
-          <span className="text-4xl font-bold text-white">{countdown}</span>
+          <span className="lg:text-4xl font-bold text-white">{countdown}</span>
         </div>
 
         <div className="text-center text-sm text-gray-300">
