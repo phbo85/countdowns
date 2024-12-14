@@ -34,6 +34,7 @@ export default function SearchBar() {
   };
 
   const addMediaToTracker = async (result: TMDBResult) => {
+    if (result.media_type === "person") return;
     const details = await getMediaDetails(result.id, result.media_type);
 
     if (details) {

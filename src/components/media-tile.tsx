@@ -9,7 +9,7 @@ import {
   isValid,
 } from "date-fns";
 import { useEffect, useState } from "react";
-import { Card } from "./ui/card";
+import { Card } from "@/components/ui/card";
 
 interface MediaTileProps {
   media: MediaDetails;
@@ -69,7 +69,7 @@ export default function MediaTile({ media, onRemove }: MediaTileProps) {
 
       {media.poster_path && (
         <img
-          src={media.poster_path}
+          src={`https://image.tmdb.org/t/p/w500${media.poster_path}`}
           alt={media.title}
           className="absolute inset-0 w-full h-full object-cover"
         />

@@ -10,7 +10,7 @@ interface MediaStore {
   removeMedia: (id: number) => void;
 }
 
-export const useMediaStore = create<MediaStore>(
+export const useMediaStore = create<MediaStore>()(
   persist(
     (set) => ({
       selectedMedia: [],
