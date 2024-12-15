@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 const dmSans = DM_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Media Tracker",
+  title: "Countdown Tracker",
   description: "Track your favorite movies and TV shows",
 };
 

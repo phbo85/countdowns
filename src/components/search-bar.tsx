@@ -61,14 +61,14 @@ export default function SearchBar() {
 
   return (
     <>
-      <div className="flex mb-4">
+      <div className="flex mb-4 border-2 p-3">
         <Input
           type="text"
           placeholder="Search for a movie or TV show"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onKeyPress={handleKeyPress}
-          className="mr-2"
+          onKeyUp={handleKeyPress}
+          className="mr-2 border-2"
         />
         <Button onClick={handleSearch}>Search</Button>
       </div>
@@ -76,7 +76,7 @@ export default function SearchBar() {
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle>Search Results</DrawerTitle>
+            <DrawerTitle className="lg:text-4xl">Search Results</DrawerTitle>
             <DrawerClose />
             <Button
               variant="ghost"
@@ -101,21 +101,21 @@ export default function SearchBar() {
                     <img
                       src={`https://image.tmdb.org/t/p/w200${result.poster_path}`}
                       alt={result.title || result.name}
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover mix-blend-screen"
                     />
                   )}
-                  <div className="relative z-10 p-2 bg-black bg-opacity-50 h-full flex flex-col gap-4">
-                    <h2 className="text-sm md:text-lg lg:text-2xl font-bold text-white">
+                  <div className="relative z-10 p-2 h-full flex flex-col gap-4">
+                    <h2 className="text-sm md:text-lg lg:text-2xl font-bold ">
                       {result.title || result.name}
                     </h2>
-                    <p className="text-xs text-gray-300">
+                    <p className="text-xs ">
                       {result.media_type === "movie"
                         ? `Release Date: ${result.release_date}`
                         : `First Air Date: ${result.first_air_date}`}
                     </p>
                     <div className="absolute bottom-2 left-2 right-2">
                       {isAlreadyAdded ? (
-                        <Button variant="outline" disabled>
+                        <Button variant="outline" className="w-full" disabled>
                           Already Added
                         </Button>
                       ) : (
