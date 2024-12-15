@@ -81,10 +81,10 @@ export default function SearchBar() {
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-2 right-2 text-red-500 hover:text-green-500 transition-colors duration-300"
+              className="absolute top-2 right-2 h-8 w-8"
               onClick={() => setIsDrawerOpen(false)}
             >
-              <X className="h-4 w-4" />
+              <X className="h-8 w-8" />
             </Button>
           </DrawerHeader>
           <div className="flex flex-wrap gap-4 p-4 mb-4">
@@ -104,11 +104,11 @@ export default function SearchBar() {
                       className="absolute inset-0 w-full h-full object-cover"
                     />
                   )}
-                  <div className="relative z-10 p-2 bg-black bg-opacity-50 h-full flex flex-col justify-between">
+                  <div className="relative z-10 p-2 bg-black bg-opacity-50 h-full flex flex-col gap-4">
                     <h2 className="text-sm md:text-lg lg:text-2xl font-bold text-white">
                       {result.title || result.name}
                     </h2>
-                    <p className="text-sm text-gray-300">
+                    <p className="text-xs text-gray-300">
                       {result.media_type === "movie"
                         ? `Release Date: ${result.release_date}`
                         : `First Air Date: ${result.first_air_date}`}

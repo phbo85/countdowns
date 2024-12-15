@@ -23,11 +23,21 @@ interface MediaTileProps {
   onRemove: () => void;
 }
 
+interface Countdown {
+  days: number;
+  hours: number;
+  minutes: number;
+}
+
 export default function MediaTile({ media, onRemove }: MediaTileProps) {
-  const [countdown, setCountdown] = useState<string>("");
+  const [countdown, setCountdown] = useState<Countdown>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+  });
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const calculateCountdown = () => {
+  const calculateCountdown = (): Countdown => {
     let targetDate;
 
     if (media.media_type === "tv" && media.next_episode_date) {
@@ -37,20 +47,19 @@ export default function MediaTile({ media, onRemove }: MediaTileProps) {
     }
 
     if (!isValid(targetDate)) {
-      return "Unknown date";
+      return { days: 0, hours: 0, minutes: 0 };
     }
 
     const now = new Date();
     const days = differenceInDays(targetDate, now);
-
     const hours = differenceInHours(targetDate, now) % 24;
     const minutes = differenceInMinutes(targetDate, now) % 60;
 
     if (minutes < 0) {
-      return "Released";
+      return { days: 0, hours: 0, minutes: 0 };
     }
 
-    return `${days}d ${hours}h ${minutes}m`;
+    return { days, hours, minutes };
   };
 
   useEffect(() => {
@@ -79,12 +88,30 @@ export default function MediaTile({ media, onRemove }: MediaTileProps) {
         )}
 
         <div className="relative z-10 p-4 bg-black bg-opacity-50 h-full flex flex-col justify-between">
-          <h2 className="lg:text-2xl font-bold text-white">{media.title}</h2>
+          <h2 className="lg:text-2xl font-bold text-white text-center">
+            {media.title}
+          </h2>
 
-          <div className="flex items-center justify-center">
-            <span className="text-xl lg:text-4xl font-bold text-white">
-              {countdown}
-            </span>
+          <div className="flex flex-col items-center justify-center">
+            {countdown.days > 0 && (
+              <span className="text-xl lg:text-5xl font-bold text-white">
+                {countdown.days}d
+              </span>
+            )}
+            {countdown.hours > 0 && (
+              <span className="text-xl lg:text-5xl font-bold text-white">
+                {countdown.hours}h
+              </span>
+            )}
+            {countdown.minutes > 0 ? (
+              <span className="text-xl lg:text-5xl font-bold text-white">
+                {countdown.minutes}m
+              </span>
+            ) : (
+              <span className="text-xl lg:text-3xl font-bold text-white">
+                released
+              </span>
+            )}
           </div>
         </div>
       </Card>
