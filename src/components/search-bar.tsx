@@ -14,6 +14,7 @@ import { searchMedia, getMediaDetails } from "@/lib/tmdb";
 import { TMDBResult } from "@/types/tmdb";
 import { useMediaStore } from "@/stores/media-store";
 import { Card } from "@/components/ui/card";
+import { X } from "lucide-react"; // Import the close icon
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
@@ -77,8 +78,16 @@ export default function SearchBar() {
           <DrawerHeader>
             <DrawerTitle>Search Results</DrawerTitle>
             <DrawerClose />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-2 right-2 text-red-500 hover:text-green-500 transition-colors duration-300"
+              onClick={() => setIsDrawerOpen(false)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </DrawerHeader>
-          <div className="flex flex-wrap gap-4 p-4">
+          <div className="flex flex-wrap gap-4 p-4 mb-4">
             {searchResults.map((result) => {
               const isAlreadyAdded = selectedMedia.some(
                 (media) => media.id === result.id
@@ -86,7 +95,7 @@ export default function SearchBar() {
               return (
                 <Card
                   key={result.id}
-                  className="relative overflow-hidden w-28 lg:w-64 aspect-[2/3]"
+                  className="relative overflow-hidden w-[30%] lg:w-64 aspect-[2/3]"
                 >
                   {result.poster_path && (
                     <img
@@ -96,7 +105,7 @@ export default function SearchBar() {
                     />
                   )}
                   <div className="relative z-10 p-2 bg-black bg-opacity-50 h-full flex flex-col justify-between">
-                    <h2 className="lg:text-2xl font-bold text-white">
+                    <h2 className="text-sm md:text-lg lg:text-2xl font-bold text-white">
                       {result.title || result.name}
                     </h2>
                     <p className="text-sm text-gray-300">
@@ -104,7 +113,7 @@ export default function SearchBar() {
                         ? `Release Date: ${result.release_date}`
                         : `First Air Date: ${result.first_air_date}`}
                     </p>
-                    <div className="absolute bottom-2 left-2">
+                    <div className="absolute bottom-2 left-2 right-2">
                       {isAlreadyAdded ? (
                         <Button variant="outline" disabled>
                           Already Added
@@ -113,6 +122,7 @@ export default function SearchBar() {
                         <Button
                           variant="outline"
                           onClick={() => addMediaToTracker(result)}
+                          className="w-full"
                         >
                           Add
                         </Button>
@@ -122,6 +132,9 @@ export default function SearchBar() {
                 </Card>
               );
             })}
+            {searchResults.length === 0 && (
+              <p className="text-center w-full">No results found</p>
+            )}
           </div>
         </DrawerContent>
       </Drawer>
