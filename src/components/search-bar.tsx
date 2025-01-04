@@ -13,8 +13,8 @@ import {
 import { searchMedia, getMediaDetails } from "@/lib/tmdb";
 import { TMDBResult } from "@/types/tmdb";
 import { useMediaStore } from "@/stores/media-store";
-import { Card } from "@/components/ui/card";
-import { X } from "lucide-react"; // Import the close icon
+import { X } from "lucide-react";
+import SearchResultCard from "./search-result-card";
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
@@ -34,12 +34,16 @@ export default function SearchBar() {
     }
   };
 
+  const clearSearch = () => {
+    setQuery("");
+    setSearchResults([]);
+  };
+
   const addMediaToTracker = async (result: TMDBResult) => {
     if (result.media_type === "person") return;
     const details = await getMediaDetails(result.id, result.media_type);
 
     if (details) {
-      // Prevent duplicates
       if (!selectedMedia.some((media) => media.id === details.id)) {
         const updatedMedia = [...selectedMedia, details];
         updatedMedia.sort((a, b) => {
@@ -61,16 +65,28 @@ export default function SearchBar() {
 
   return (
     <>
-      <div className="flex mb-4 border-2 p-3">
-        <Input
-          type="text"
-          placeholder="Search for a movie or TV show"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyUp={handleKeyPress}
-          className="mr-2 border-2"
-        />
-        <Button onClick={handleSearch}>Search</Button>
+      <div className="flex mb-4 border-4 shadow p-3">
+        <div className="relative flex-1">
+          <Input
+            type="text"
+            placeholder="Search for a movie or TV show"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyUp={handleKeyPress}
+            className="mr-2 border-4 h-10 w-full"
+          />
+          {query && (
+            <button
+              className="absolute top-1/2 transform -translate-y-1/2 right-3"
+              onClick={clearSearch}
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
+        </div>
+        <Button size="lg" onClick={handleSearch}>
+          Search
+        </Button>
       </div>
 
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
@@ -87,51 +103,17 @@ export default function SearchBar() {
               <X className="h-8 w-8" />
             </Button>
           </DrawerHeader>
-          <div className="flex flex-wrap gap-4 p-4 mb-4">
-            {searchResults.map((result) => {
-              const isAlreadyAdded = selectedMedia.some(
-                (media) => media.id === result.id
-              );
-              return (
-                <Card
-                  key={result.id}
-                  className="relative overflow-hidden w-[30%] lg:w-64 aspect-[2/3]"
-                >
-                  {result.poster_path && (
-                    <img
-                      src={`https://image.tmdb.org/t/p/w200${result.poster_path}`}
-                      alt={result.title || result.name}
-                      className="absolute inset-0 w-full h-full object-cover mix-blend-screen"
-                    />
-                  )}
-                  <div className="relative z-10 p-2 h-full flex flex-col gap-4">
-                    <h2 className="text-sm md:text-lg lg:text-2xl font-bold ">
-                      {result.title || result.name}
-                    </h2>
-                    <p className="text-xs ">
-                      {result.media_type === "movie"
-                        ? `Release Date: ${result.release_date}`
-                        : `First Air Date: ${result.first_air_date}`}
-                    </p>
-                    <div className="absolute bottom-2 left-2 right-2">
-                      {isAlreadyAdded ? (
-                        <Button variant="outline" className="w-full" disabled>
-                          Already Added
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="outline"
-                          onClick={() => addMediaToTracker(result)}
-                          className="w-full"
-                        >
-                          Add
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-              );
-            })}
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-4 p-4 mb-4">
+            {searchResults.map((result) => (
+              <SearchResultCard
+                key={result.id}
+                result={result}
+                isAlreadyAdded={selectedMedia.some(
+                  (media) => media.id === result.id
+                )}
+                addMediaToTracker={addMediaToTracker}
+              />
+            ))}
             {searchResults.length === 0 && (
               <p className="text-center w-full">No results found</p>
             )}
