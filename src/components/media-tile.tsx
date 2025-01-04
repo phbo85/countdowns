@@ -37,7 +37,7 @@ export default function MediaTile({ media, onRemove }: MediaTileProps) {
   return (
     <>
       <Card
-        className="relative w-[45%] lg:w-[30%] max-w-64 aspect-[2/3] cursor-pointer"
+        className="relative w-full max-w-xs aspect-[2/3] cursor-pointer"
         onClick={() => setIsDrawerOpen(true)}
       >
         <CardContent

@@ -8,7 +8,7 @@ export default function MediaList() {
   const { selectedMedia, removeMedia } = useMediaStore();
 
   return (
-    <div className="flex flex-wrap gap-4">
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
       {selectedMedia.length === 0 && (
         <Card>
           <CardHeader>
