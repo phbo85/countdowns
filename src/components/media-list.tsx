@@ -13,7 +13,8 @@ export default function MediaList() {
         <Card>
           <CardHeader>
             <CardTitle>
-              Nothing tracked yet, search for a movie or tv show to add
+              Nothing tracked yet, search for a movie or tv show to add a
+              countdown.
             </CardTitle>
           </CardHeader>
         </Card>
