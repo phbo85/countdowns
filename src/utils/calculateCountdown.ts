@@ -14,13 +14,14 @@ interface Countdown {
 }
 
 export const calculateCountdown = (media: MediaDetails): Countdown => {
-  let targetDate;
-
-  if (media.media_type === "tv" && media.next_episode_date) {
-    targetDate = parseISO(media.next_episode_date);
-  } else {
-    targetDate = parseISO(media.release_date);
+  if (!media.releaseDate && !media.nextEpisodeDate) {
+    return { days: 0, hours: 0, minutes: 0 };
   }
+
+  const targetDate =
+    media.mediaType === "tv" && media.nextEpisodeDate
+      ? parseISO(media.nextEpisodeDate)
+      : parseISO(media.releaseDate);
 
   if (!isValid(targetDate)) {
     return { days: 0, hours: 0, minutes: 0 };

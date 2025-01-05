@@ -1,19 +1,21 @@
 import axios from "axios";
 import {
+  TMDBResultSchema,
+  TVShowResponseSchema,
+  SeasonResponseSchema,
+  MovieResponseSchema,
   TMDBResult,
   MediaDetails,
-  TVShowResponse,
-  SeasonResponse,
-  MovieResponse,
 } from "@/types/tmdb";
 import { parseISO, isAfter } from "date-fns";
+import { camelCaseKeys } from "@/utils/camelCaseKeys";
 
 const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 
-export async function searchMedia(query: string): Promise<TMDBResult[]> {
+export const searchMedia = async (query: string): Promise<TMDBResult[]> => {
   try {
-    const response = await axios.get<{ results: TMDBResult[] }>(
+    const response = await axios.get<{ results: unknown }>(
       `${BASE_URL}/search/multi`,
       {
         params: {
@@ -26,11 +28,25 @@ export async function searchMedia(query: string): Promise<TMDBResult[]> {
 
     const today = new Date();
 
-    return response.data.results.filter((item: TMDBResult) => {
-      if (item.media_type === "movie" && item.release_date) {
-        return isAfter(parseISO(item.release_date), today);
-      } else if (item.media_type === "tv" && item.first_air_date) {
-        return parseISO(item.first_air_date);
+    if (!response.data.results) {
+      return [];
+    }
+
+    const filteredResults = (response.data.results as unknown[])?.filter(
+      (result) => {
+        const media = result as { media_type?: string };
+        return media.media_type === "movie" || media.media_type === "tv";
+      }
+    );
+    const results = TMDBResultSchema.array().parse(
+      camelCaseKeys(filteredResults as object)
+    );
+
+    return results.filter((item) => {
+      if (item.mediaType === "movie" && item.releaseDate) {
+        return isAfter(parseISO(item.releaseDate), today);
+      } else if (item.mediaType === "tv" && item.firstAirDate) {
+        return parseISO(item.firstAirDate);
       }
       return false;
     });
@@ -38,32 +54,29 @@ export async function searchMedia(query: string): Promise<TMDBResult[]> {
     console.error("Error searching media:", error);
     return [];
   }
-}
+};
 
-export async function getMediaDetails(
+export const getMediaDetails = async (
   id: number,
   mediaType: "movie" | "tv"
-): Promise<MediaDetails | null> {
+): Promise<MediaDetails | null> => {
   try {
     if (mediaType === "tv") {
-      const showResponse = await axios.get<TVShowResponse>(
-        `${BASE_URL}/tv/${id}`,
-        {
-          params: {
-            api_key: TMDB_API_KEY,
-          },
-        }
-      );
+      const showResponse = await axios.get<unknown>(`${BASE_URL}/tv/${id}`, {
+        params: {
+          api_key: TMDB_API_KEY,
+        },
+      });
 
-      const show = showResponse.data;
+      const show = TVShowResponseSchema.parse(
+        camelCaseKeys(showResponse.data as object)
+      );
       let nextEpisodeDate: string | null = null;
 
-      // Get the latest season number
-      const latestSeasonNumber = show.number_of_seasons;
+      const latestSeasonNumber = show.numberOfSeasons;
 
-      // Fetch episodes for the latest season
       try {
-        const seasonResponse = await axios.get<SeasonResponse>(
+        const seasonResponse = await axios.get<unknown>(
           `${BASE_URL}/tv/${id}/season/${latestSeasonNumber}`,
           {
             params: {
@@ -72,21 +85,23 @@ export async function getMediaDetails(
           }
         );
 
-        // Find the next episode after today
+        const season = SeasonResponseSchema.parse(
+          camelCaseKeys(seasonResponse.data as object)
+        );
+
         const today = new Date();
-        const futureEpisodes = seasonResponse.data.episodes
+        const futureEpisodes = season.episodes
           .filter(
             (episode) =>
-              episode.air_date && isAfter(parseISO(episode.air_date), today)
+              episode.airDate && isAfter(parseISO(episode.airDate), today)
           )
           .sort(
             (a, b) =>
-              parseISO(a.air_date).getTime() - parseISO(b.air_date).getTime()
+              parseISO(a.airDate).getTime() - parseISO(b.airDate).getTime()
           );
 
-        // Take the first future episode's date
         if (futureEpisodes.length > 0) {
-          nextEpisodeDate = futureEpisodes[0].air_date;
+          nextEpisodeDate = futureEpisodes[0].airDate;
         }
       } catch (seasonError) {
         console.log(
@@ -98,37 +113,35 @@ export async function getMediaDetails(
       return {
         id: show.id,
         title: show.name,
-        poster_path: show.poster_path
-          ? `https://image.tmdb.org/t/p/w500${show.poster_path}`
+        posterPath: show.posterPath
+          ? `https://image.tmdb.org/t/p/w500${show.posterPath}`
           : "",
-        release_date: show.first_air_date,
-        next_episode_date: nextEpisodeDate,
-        media_type: "tv",
-      };
-    } else {
-      // For movies, keep the existing logic
-      const response = await axios.get<MovieResponse>(
-        `${BASE_URL}/movie/${id}`,
-        {
-          params: {
-            api_key: TMDB_API_KEY,
-          },
-        }
-      );
-
-      const data = response.data;
-      return {
-        id: data.id,
-        title: data.title,
-        poster_path: data.poster_path
-          ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
-          : "",
-        release_date: data.release_date,
-        media_type: "movie",
+        releaseDate: show.firstAirDate,
+        nextEpisodeDate,
+        mediaType: "tv",
       };
     }
+
+    const response = await axios.get<unknown>(`${BASE_URL}/movie/${id}`, {
+      params: {
+        api_key: TMDB_API_KEY,
+      },
+    });
+
+    const data = MovieResponseSchema.parse(
+      camelCaseKeys(response.data as object)
+    );
+    return {
+      id: data.id,
+      title: data.title,
+      posterPath: data.posterPath
+        ? `https://image.tmdb.org/t/p/w500${data.posterPath}`
+        : "",
+      releaseDate: data.releaseDate,
+      mediaType: "movie",
+    };
   } catch (error) {
     console.error("Error fetching media details:", error);
     return null;
   }
-}
+};

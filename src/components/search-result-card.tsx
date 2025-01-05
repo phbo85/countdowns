@@ -18,8 +18,8 @@ export default function SearchResultCard({
       <CardContent
         className="h-full flex justify-center items-center bg-cover p-0"
         style={{
-          backgroundImage: result.poster_path
-            ? `url(https://image.tmdb.org/t/p/w500${result.poster_path})`
+          backgroundImage: result.posterPath
+            ? `url(https://image.tmdb.org/t/p/w500${result.posterPath})`
             : undefined,
         }}
       >
@@ -28,9 +28,9 @@ export default function SearchResultCard({
             {result.title || result.name}
           </h2>
           <p className="text-xs ">
-            {result.media_type === "movie"
-              ? `Release Date: ${result.release_date}`
-              : `First Air Date: ${result.first_air_date}`}
+            {result.mediaType === "movie"
+              ? `Release Date: ${result.releaseDate}`
+              : `First Air Date: ${result.firstAirDate}`}
           </p>
           <div className="absolute bottom-2 left-2 right-2">
             {isAlreadyAdded ? (

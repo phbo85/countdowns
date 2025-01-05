@@ -43,8 +43,8 @@ export default function MediaTile({ media, onRemove }: MediaTileProps) {
         <CardContent
           className="h-full flex justify-center items-center bg-cover"
           style={{
-            backgroundImage: media.poster_path
-              ? `url(https://image.tmdb.org/t/p/w500${media.poster_path})`
+            backgroundImage: media.posterPath
+              ? `url(https://image.tmdb.org/t/p/w500${media.posterPath})`
               : undefined,
           }}
         >

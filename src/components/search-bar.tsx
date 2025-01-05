@@ -40,21 +40,21 @@ export default function SearchBar() {
   };
 
   const addMediaToTracker = async (result: TMDBResult) => {
-    if (result.media_type === "person") return;
-    const details = await getMediaDetails(result.id, result.media_type);
+    if (result.mediaType === "person") return;
+    const details = await getMediaDetails(result.id, result.mediaType);
 
     if (details) {
       if (!selectedMedia.some((media) => media.id === details.id)) {
         const updatedMedia = [...selectedMedia, details];
         updatedMedia.sort((a, b) => {
           const dateA =
-            a.media_type === "tv"
-              ? a.next_episode_date || a.release_date
-              : a.release_date;
+            a.mediaType === "tv"
+              ? a.nextEpisodeDate || a.releaseDate
+              : a.releaseDate;
           const dateB =
-            b.media_type === "tv"
-              ? b.next_episode_date || b.release_date
-              : b.release_date;
+            b.mediaType === "tv"
+              ? b.nextEpisodeDate || b.releaseDate
+              : b.releaseDate;
           return new Date(dateA).getTime() - new Date(dateB).getTime();
         });
         setSelectedMedia(updatedMedia);

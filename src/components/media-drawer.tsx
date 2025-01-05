@@ -23,9 +23,9 @@ export default function MediaDrawer({
   onRemove,
 }: MediaDrawerProps) {
   const targetDate =
-    media.media_type === "tv" && media.next_episode_date
-      ? new Date(media.next_episode_date)
-      : new Date(media.release_date);
+    media.mediaType === "tv" && media.nextEpisodeDate
+      ? new Date(media.nextEpisodeDate)
+      : new Date(media.releaseDate);
 
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
@@ -46,18 +46,18 @@ export default function MediaDrawer({
         </DrawerHeader>
         <div className="max-w-sm mx-auto flex flex-col items-center">
           <div className="p-4 aspect-[2/3] w-72 max-w-[80vw] mx-auto">
-            {media.poster_path && (
+            {media.posterPath && (
               <div
                 className="h-full flex justify-center items-center bg-cover border-4 shadow"
                 style={{
-                  backgroundImage: `url(https://image.tmdb.org/t/p/w500${media.poster_path})`,
+                  backgroundImage: `url(https://image.tmdb.org/t/p/w500${media.posterPath})`,
                 }}
               />
             )}
           </div>
           <div className="text-center text-sm my-4">
-            {media.media_type === "tv"
-              ? media.next_episode_date
+            {media.mediaType === "tv"
+              ? media.nextEpisodeDate
                 ? `Next Episode: ${targetDate.toLocaleDateString()} ${targetDate.toLocaleTimeString()}`
                 : "Next Episode: Unknown"
               : `Release Date: ${targetDate.toLocaleDateString()} ${targetDate.toLocaleTimeString()}`}
